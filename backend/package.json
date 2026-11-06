@@ -1,0 +1,16 @@
+
+{
+  "name": "food-ordering-backend",
+  "version": "1.0.0",
+  "description": "Backend for Food Ordering project",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:validate": "prisma validate"
+  }
+}
