@@ -6,3 +6,235 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+// Quy ước (mục 6.2):
+// - Tên model: PascalCase, số ít. Field: camelCase tiếng Anh, ánh xạ cột tiếng Việt bằng @map.
+// - Cột trạng thái trong DB là VARCHAR nên khai báo String, KHÔNG dùng enum của Prisma.
+//   Giá trị lấy từ src/common/constants.
+// - Cột DECIMAL trả về kiểu Decimal; chuyển sang Number trong mapper trước khi trả JSON.
+
+// ---------------------------------------------------------------------
+// module account (BE1)
+// ---------------------------------------------------------------------
+
+model Account {
+  id        Int      @id @default(autoincrement()) @map("MaTaiKhoan")
+  username  String   @unique(map: "uq_tai_khoan_ten_dang_nhap") @map("TenDangNhap") @db.VarChar(50)
+  password  String   @map("MatKhau") @db.VarChar(255)
+  role      String   @map("VaiTro") @db.VarChar(20)
+  status    String   @default("ACTIVE") @map("TrangThai") @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("NgayTao")
+
+  customer Customer?
+  seller   Seller?
+
+  @@map("TAI_KHOAN")
+}
+
+model Customer {
+  id            Int     @id @default(autoincrement()) @map("MaKhachHang")
+  fullName      String  @map("HoTen") @db.VarChar(100)
+  email         String  @unique(map: "uq_khach_hang_email") @map("Email") @db.VarChar(255)
+  phone         String  @unique(map: "uq_khach_hang_sdt") @map("SoDienThoai") @db.VarChar(15)
+  address       String? @map("DiaChi") @db.VarChar(255)
+  loyaltyPoints Int     @default(0) @map("DiemTichLuy")
+  accountId     Int     @unique(map: "uq_khach_hang_tai_khoan") @map("TAI_KHOANMaTaiKhoan")
+
+  account Account  @relation(fields: [accountId], references: [id])
+  cart    Cart?
+  orders  Order[]
+  reviews Review[]
+
+  @@map("KHACH_HANG")
+}
+
+model Seller {
+  id        Int    @id @default(autoincrement()) @map("MaNguoiBan")
+  fullName  String @map("HoTen") @db.VarChar(100)
+  email     String @unique(map: "uq_nguoi_ban_email") @map("Email") @db.VarChar(255)
+  phone     String @unique(map: "uq_nguoi_ban_sdt") @map("SoDienThoai") @db.VarChar(15)
+  accountId Int    @unique(map: "uq_nguoi_ban_tai_khoan") @map("TAI_KHOANMaTaiKhoan")
+
+  account Account @relation(fields: [accountId], references: [id])
+  shops   Shop[]
+
+  @@map("NGUOI_BAN")
+}
+
+model Shop {
+  id           Int      @id @default(autoincrement()) @map("MaCuaHang")
+  name         String   @map("TenCuaHang") @db.VarChar(150)
+  address      String   @map("DiaChi") @db.VarChar(255)
+  phone        String   @map("SoDienThoai") @db.VarChar(15)
+  description  String?  @map("MoTa") @db.Text
+  openingHours String?  @map("GioMoCua") @db.VarChar(50)
+  status       String   @default("PENDING_APPROVAL") @map("TrangThai") @db.VarChar(30)
+  rejectReason String?  @map("LyDoTuChoi") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("NgayTao")
+  sellerId     Int      @map("NGUOI_BANMaNguoiBan")
+
+  seller Seller  @relation(fields: [sellerId], references: [id])
+  dishes Dish[]
+  orders Order[]
+
+  @@index([sellerId], map: "fk_cua_hang_nguoi_ban")
+  @@index([name], map: "idx_cua_hang_ten")
+  @@index([status], map: "idx_cua_hang_trang_thai")
+  @@map("CUA_HANG")
+}
+
+// ---------------------------------------------------------------------
+// module menu (BE2)
+// ---------------------------------------------------------------------
+
+model Category {
+  id          Int     @id @default(autoincrement()) @map("MaDanhMuc")
+  name        String  @unique(map: "uq_danh_muc_ten") @map("TenDanhMuc") @db.VarChar(100)
+  description String? @map("MoTa") @db.VarChar(255)
+
+  dishes Dish[]
+
+  @@map("DANH_MUC")
+}
+
+model Dish {
+  id          Int     @id @default(autoincrement()) @map("MaMonAn")
+  name        String  @map("TenMonAn") @db.VarChar(255)
+  description String? @map("MoTa") @db.Text
+  price       Decimal @map("GiaBan") @db.Decimal(19, 0)
+  image       String? @map("HinhAnh") @db.VarChar(500)
+  status      String  @default("AVAILABLE") @map("TrangThai") @db.VarChar(30)
+  categoryId  Int     @map("DANH_MUCMaDanhMuc")
+  shopId      Int     @map("CUA_HANGMaCuaHang")
+
+  category   Category    @relation(fields: [categoryId], references: [id])
+  shop       Shop        @relation(fields: [shopId], references: [id])
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@index([categoryId], map: "fk_mon_an_danh_muc")
+  @@index([shopId], map: "fk_mon_an_cua_hang")
+  @@index([name], map: "idx_mon_an_ten")
+  @@index([status], map: "idx_mon_an_trang_thai")
+  @@map("MON_AN")
+}
+
+model Cart {
+  id         Int      @id @default(autoincrement()) @map("MaGioHang")
+  subtotal   Decimal  @default(0) @map("TongTamTinh") @db.Decimal(19, 0)
+  updatedAt  DateTime @default(now()) @updatedAt @map("NgayCapNhat")
+  customerId Int      @unique(map: "uq_gio_hang_khach_hang") @map("KHACH_HANGMaKhachHang")
+
+  customer Customer   @relation(fields: [customerId], references: [id])
+  items    CartItem[]
+
+  @@map("GIO_HANG")
+}
+
+model CartItem {
+  id       Int @id @default(autoincrement()) @map("MaChiTietGioHang")
+  quantity Int @default(1) @map("SoLuong")
+  cartId   Int @map("GIO_HANGMaGioHang")
+  dishId   Int @map("MON_ANMaMonAn")
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  dish Dish @relation(fields: [dishId], references: [id])
+
+  @@unique([cartId, dishId], map: "uq_chitiet_giohang_mon")
+  @@index([dishId], map: "fk_chitiet_giohang_mon_an")
+  @@map("CHITIET_GIOHANG")
+}
+
+model Review {
+  id         Int      @id @default(autoincrement()) @map("MaDanhGia")
+  rating     Int      @map("SoSao")
+  comment    String?  @map("BinhLuan") @db.VarChar(1000)
+  createdAt  DateTime @default(now()) @map("NgayDanhGia")
+  customerId Int      @map("KHACH_HANGMaKhachHang")
+  dishId     Int      @map("MON_ANMaMonAn")
+  orderId    Int      @map("DON_HANGMaDonHang")
+
+  customer Customer @relation(fields: [customerId], references: [id])
+  dish     Dish     @relation(fields: [dishId], references: [id])
+  order    Order    @relation(fields: [orderId], references: [id])
+
+  @@unique([orderId, dishId], map: "uq_danh_gia_don_mon")
+  @@index([customerId], map: "fk_danh_gia_khach_hang")
+  @@index([dishId], map: "fk_danh_gia_mon_an")
+  @@map("DANH_GIA")
+}
+
+// ---------------------------------------------------------------------
+// module order (BE3)
+// ---------------------------------------------------------------------
+
+model Order {
+  id            Int      @id @default(autoincrement()) @map("MaDonHang")
+  createdAt     DateTime @default(now()) @map("NgayDat")
+  updatedAt     DateTime @default(now()) @updatedAt @map("NgayCapNhat")
+  totalAmount   Decimal  @map("TongTien") @db.Decimal(19, 0)
+  status        String   @default("PENDING") @map("TrangThai") @db.VarChar(30)
+  receiverName  String   @map("TenNguoiNhan") @db.VarChar(100)
+  receiverPhone String   @map("SoDienThoaiNhan") @db.VarChar(15)
+  deliveryAddr  String   @map("DiaChiGiao") @db.VarChar(255)
+  note          String?  @map("GhiChu") @db.VarChar(500)
+  reason        String?  @map("LyDo") @db.VarChar(255)
+  customerId    Int      @map("KHACH_HANGMaKhachHang")
+  shopId        Int      @map("CUA_HANGMaCuaHang")
+
+  customer Customer    @relation(fields: [customerId], references: [id])
+  shop     Shop        @relation(fields: [shopId], references: [id])
+  items    OrderItem[]
+  payments Payment[]
+  reviews  Review[]
+
+  @@index([status], map: "idx_don_hang_trang_thai")
+  @@index([shopId, status, createdAt], map: "idx_don_hang_cua_hang_ngay")
+  @@index([customerId, createdAt], map: "idx_don_hang_khach_ngay")
+  @@map("DON_HANG")
+}
+
+model OrderItem {
+  id       Int     @id @default(autoincrement()) @map("MaChiTietDonHang")
+  quantity Int     @map("SoLuong")
+  price    Decimal @map("DonGia") @db.Decimal(19, 0)
+  orderId  Int     @map("DON_HANGMaDonHang")
+  dishId   Int     @map("MON_ANMaMonAn")
+
+  order Order @relation(fields: [orderId], references: [id])
+  dish  Dish  @relation(fields: [dishId], references: [id])
+
+  @@unique([orderId, dishId], map: "uq_chitiet_don_hang_mon")
+  @@index([dishId], map: "fk_chitiet_don_hang_mon_an")
+  @@map("CHITIET_DON_HANG")
+}
+
+model Payment {
+  id            Int       @id @default(autoincrement()) @map("MaThanhToan")
+  transactionId String?   @unique(map: "uq_thanh_toan_ma_giao_dich") @map("MaGiaoDich") @db.VarChar(100)
+  method        String    @map("PhuongThuc") @db.VarChar(30)
+  amount        Decimal   @map("SoTien") @db.Decimal(19, 0)
+  status        String    @default("UNPAID") @map("TrangThai") @db.VarChar(30)
+  paidAt        DateTime? @map("NgayThanhToan")
+  orderId       Int       @map("DON_HANGMaDonHang")
+
+  order  Order   @relation(fields: [orderId], references: [id])
+  refund Refund?
+
+  @@index([orderId], map: "fk_thanh_toan_don_hang")
+  @@index([status], map: "idx_thanh_toan_trang_thai")
+  @@map("THANH_TOAN")
+}
+
+model Refund {
+  id         Int      @id @default(autoincrement()) @map("MaHoanTien")
+  amount     Decimal  @map("SoTien") @db.Decimal(19, 0)
+  reason     String   @map("LyDo") @db.VarChar(255)
+  refundedAt DateTime @default(now()) @map("NgayHoanTien")
+  paymentId  Int      @unique(map: "uq_hoan_tien_thanh_toan") @map("THANH_TOANMaThanhToan")
+
+  payment Payment @relation(fields: [paymentId], references: [id])
+
+  @@map("HOAN_TIEN")
+}

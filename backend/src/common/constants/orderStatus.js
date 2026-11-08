@@ -1,0 +1,10 @@
+// Trạng thái đơn hàng (cột DON_HANG.TrangThai)
+export const ORDER_STATUS = Object.freeze({
+    PENDING: "PENDING",
+    CONFIRMED: "CONFIRMED",
+    PREPARING: "PREPARING",
+    DELIVERING: "DELIVERING",
+    COMPLETED: "COMPLETED",
+    CANCELLED: "CANCELLED",
+    REJECTED: "REJECTED"
+});
