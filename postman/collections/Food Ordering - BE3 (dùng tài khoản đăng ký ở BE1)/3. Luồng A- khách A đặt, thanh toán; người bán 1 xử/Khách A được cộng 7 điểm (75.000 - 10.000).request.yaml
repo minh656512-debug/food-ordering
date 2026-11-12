@@ -1,0 +1,18 @@
+$kind: http-request
+name: Khách A được cộng 7 điểm (75.000 / 10.000)
+url: "{{baseUrl}}/customers/me"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("loyaltyPoints = 7", () => pm.expect(d.loyaltyPoints).to.eql(7));
+    language: text/javascript
+order: 18000

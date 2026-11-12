@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "username": "nb1_{{suffix}}",
+      "password": "{{password}}",
+      "role": "SELLER",
+      "fullName": "Người bán 1",
+      "email": "nb1{{suffix}}@example.com",
+      "phone": "081{{suffix}}"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 5000

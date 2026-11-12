@@ -1,0 +1,19 @@
+$kind: http-request
+name: "Hoàn tất: ghi nhận đã thu tiền"
+url: "{{baseUrl}}/orders/{{orderD}}/complete"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Đơn chuyển sang COMPLETED", () => pm.expect(d.status).to.eql("COMPLETED"));
+      pm.test("COD chuyển sang PAID", () => pm.expect(d.payment.status).to.eql("PAID"));
+    language: text/javascript
+order: 5000

@@ -1,0 +1,20 @@
+$kind: http-request
+name: "Người bán 1: doanh thu theo ngày (2 đơn, 150.000)"
+url: "{{baseUrl}}/shops/{{shopId}}/statistics/revenue?groupBy=day"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+queryParams:
+  groupBy: day
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("2 đơn, 150.000, món bán chạy nhất là Cơm gà x4", () => { pm.expect(d.summary.totalOrders).to.eql(2); pm.expect(d.summary.totalRevenue).to.eql(150000); pm.expect(d.summary.averageOrderValue).to.eql(75000); pm.expect(d.topDishes[0].name).to.eql("Cơm gà xối mỡ"); pm.expect(d.topDishes[0].quantity).to.eql(4); });
+    language: text/javascript
+order: 1000

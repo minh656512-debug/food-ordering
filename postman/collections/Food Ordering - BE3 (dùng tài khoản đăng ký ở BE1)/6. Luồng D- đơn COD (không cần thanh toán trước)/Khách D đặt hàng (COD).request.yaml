@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{baseUrl}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenD}}
+body:
+  type: json
+  content: |-
+    {
+      "receiverName": "Khách D",
+      "receiverPhone": "0901000001",
+      "deliveryAddress": "12 Ngõ 45 Trần Cung, Cầu Giấy, Hà Nội",
+      "note": "Gọi trước khi giao",
+      "paymentMethod": "COD"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+      if (body.success) pm.collectionVariables.set("orderD", String(d.id));
+      pm.test("Đơn PENDING, tổng 75.000, 2 món, thanh toán UNPAID", () => {
+        pm.expect(d.status).to.eql("PENDING"); pm.expect(d.totalAmount).to.eql(75000);
+        pm.expect(d.items.length).to.eql(2); pm.expect(d.items[0].price).to.eql(35000);
+        pm.expect(d.payment.status).to.eql("UNPAID"); pm.expect(d.payment.method).to.eql("COD"); });
+    language: text/javascript
+order: 1000

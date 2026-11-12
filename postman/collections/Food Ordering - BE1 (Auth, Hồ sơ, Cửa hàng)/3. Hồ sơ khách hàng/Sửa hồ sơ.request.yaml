@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/customers/me"
+method: PUT
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "fullName": "Khách Đã Sửa",
+      "email": "kh{{suffix}}@example.com",
+      "phone": "09{{suffix}}",
+      "address": "Cầu Giấy, Hà Nội"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{customerToken}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("Status 200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 2000

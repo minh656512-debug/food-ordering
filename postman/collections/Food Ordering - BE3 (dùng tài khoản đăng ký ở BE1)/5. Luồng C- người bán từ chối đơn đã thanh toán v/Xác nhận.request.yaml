@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderC}}/confirm"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Đơn chuyển sang CONFIRMED", () => pm.expect(d.status).to.eql("CONFIRMED"));
+    language: text/javascript
+order: 4000

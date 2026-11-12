@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderC}}/reject"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+body:
+  type: json
+  content: "{}"
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 400", () => pm.response.to.have.status(400));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là VALIDATION_ERROR", () => pm.expect(body.errorCode).to.eql("VALIDATION_ERROR"));
+    language: text/javascript
+order: 3000

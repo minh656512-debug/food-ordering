@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{baseUrl}}/shops/{{shopId}}/statistics/revenue?from=2026-12-01&to=2026-11-01"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+queryParams:
+  from: 2026-12-01
+  to: 2026-11-01
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 400", () => pm.response.to.have.status(400));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là VALIDATION_ERROR", () => pm.expect(body.errorCode).to.eql("VALIDATION_ERROR"));
+    language: text/javascript
+order: 6000

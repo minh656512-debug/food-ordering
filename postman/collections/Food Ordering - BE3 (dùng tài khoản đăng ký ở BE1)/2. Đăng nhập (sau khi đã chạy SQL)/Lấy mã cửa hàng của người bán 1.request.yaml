@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseUrl}}/sellers/me"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      if (body.success) pm.collectionVariables.set("shopId", String(d.shop.id));
+      pm.test("Cửa hàng đã được duyệt (OPEN)", () => pm.expect(d.shop.status).to.eql("OPEN"));
+    language: text/javascript
+order: 8000

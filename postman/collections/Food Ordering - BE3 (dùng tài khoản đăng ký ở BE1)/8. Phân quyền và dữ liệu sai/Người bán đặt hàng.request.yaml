@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+body:
+  type: json
+  content: |-
+    {
+      "receiverName": "Khách X",
+      "receiverPhone": "0901000001",
+      "deliveryAddress": "12 Ngõ 45 Trần Cung, Cầu Giấy, Hà Nội",
+      "note": "Gọi trước khi giao",
+      "paymentMethod": "MOCK"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 403", () => pm.response.to.have.status(403));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 5000

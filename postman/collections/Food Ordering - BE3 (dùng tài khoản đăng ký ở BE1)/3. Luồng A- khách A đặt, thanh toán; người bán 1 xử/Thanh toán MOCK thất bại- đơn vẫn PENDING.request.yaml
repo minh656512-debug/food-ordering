@@ -1,0 +1,26 @@
+$kind: http-request
+name: "Thanh toán MOCK thất bại: đơn vẫn PENDING"
+url: "{{baseUrl}}/payments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "{{orderA}}",
+      "method": "MOCK",
+      "simulate": "FAILED"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("payment FAILED, đơn PENDING", () => { pm.expect(d.payment.status).to.eql("FAILED"); pm.expect(d.order.status).to.eql("PENDING"); });
+    language: text/javascript
+order: 4000

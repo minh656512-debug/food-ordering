@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/payments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "{{orderA}}",
+      "method": "MOCK",
+      "simulate": "SUCCESS"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("payment PAID có paidAt", () => { pm.expect(d.payment.status).to.eql("PAID"); pm.expect(d.payment.paidAt).to.be.a("string"); });
+    language: text/javascript
+order: 5000

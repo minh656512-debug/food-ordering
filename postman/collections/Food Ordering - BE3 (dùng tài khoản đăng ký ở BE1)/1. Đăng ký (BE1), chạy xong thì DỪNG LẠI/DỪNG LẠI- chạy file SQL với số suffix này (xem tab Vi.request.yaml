@@ -1,0 +1,20 @@
+$kind: http-request
+name: "DỪNG LẠI: chạy file SQL với số suffix này (xem tab Visualize)"
+url: "{{baseUrl}}/sellers/me"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      console.log("SUFFIX = " + pm.collectionVariables.get("suffix"));
+      pm.visualizer.set(`<div style="font-family:sans-serif;padding:12px"><h3>Dừng lại, chạy file SQL trước khi chạy tiếp</h3><p>1. Mở file <b>database/dev/be3_prepare_test_data.sql</b></p><p>2. Sửa dòng sau thành đúng số này:</p><pre style="background:#eee;padding:8px">SET @suffix = '{{suffix}}';</pre><p>3. Chạy cả file trên database food_ordering, rồi chạy tiếp từ thư mục 2.</p></div>`, { suffix: pm.collectionVariables.get("suffix") });
+      pm.test("Cửa hàng đang chờ duyệt (đúng như BE1)", () => pm.expect(d.shop.status).to.eql("PENDING_APPROVAL"));
+    language: text/javascript
+order: 11000

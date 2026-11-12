@@ -1,0 +1,3 @@
+$kind: collection
+name: "3. Luồng A: khách A đặt, thanh toán; người bán 1 xử lý đến hoàn tất"
+order: 3000

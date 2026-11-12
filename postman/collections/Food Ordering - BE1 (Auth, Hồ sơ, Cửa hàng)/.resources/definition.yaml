@@ -1,0 +1,10 @@
+$kind: collection
+description: Chạy theo thứ tự từ trên xuống. Cần đặt biến adminPassword (mật khẩu thật của tài khoản admin trong DB).
+variables:
+  baseUrl: http://localhost:5001/api/v1
+  password: "123456"
+  adminPassword: ""
+  suffix: ""
+  customerToken: ""
+  sellerToken: ""
+  adminToken: ""

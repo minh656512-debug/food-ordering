@@ -1,0 +1,13 @@
+$kind: http-request
+name: Token khách -> /seller/** (403)
+url: "{{baseUrl}}/seller/anything"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{customerToken}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("Status 403", () => pm.response.to.have.status(403));
+    language: text/javascript
+order: 4000

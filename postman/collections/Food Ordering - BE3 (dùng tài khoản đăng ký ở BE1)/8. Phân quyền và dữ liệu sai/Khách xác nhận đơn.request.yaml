@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderA}}/confirm"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 403", () => pm.response.to.have.status(403));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 4000

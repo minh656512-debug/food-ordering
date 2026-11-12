@@ -1,0 +1,18 @@
+$kind: http-request
+name: "Nhảy cóc: chuẩn bị khi còn PENDING"
+url: "{{baseUrl}}/orders/{{orderA}}/prepare"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 409", () => pm.response.to.have.status(409));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là INVALID_ORDER_STATUS", () => pm.expect(body.errorCode).to.eql("INVALID_ORDER_STATUS"));
+    language: text/javascript
+order: 11000

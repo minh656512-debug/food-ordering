@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/accounts/me/password"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "currentPassword": "{{password}}",
+      "newPassword": "654321"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{customerToken}}"
+scripts:
+  - type: afterResponse
+    code: pm.test("Status 200", () => pm.response.to.have.status(200));
+    language: text/javascript
+order: 2000

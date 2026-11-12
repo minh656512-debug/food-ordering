@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderA}}"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 11000

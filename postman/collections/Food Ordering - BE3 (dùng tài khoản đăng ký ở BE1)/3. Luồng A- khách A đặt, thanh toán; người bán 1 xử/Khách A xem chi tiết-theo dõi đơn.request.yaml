@@ -1,0 +1,18 @@
+$kind: http-request
+name: Khách A xem chi tiết/theo dõi đơn
+url: "{{baseUrl}}/orders/{{orderA}}"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Có món, cửa hàng, thanh toán PAID", () => { pm.expect(d.items[0].dishName).to.be.a("string"); pm.expect(d.shop.id).to.eql(Number(pm.collectionVariables.get("shopId"))); pm.expect(d.payment.status).to.eql("PAID"); });
+    language: text/javascript
+order: 9000

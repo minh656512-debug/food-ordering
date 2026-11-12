@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "username": "kh_{{suffix}}",
+      "password": "{{password}}",
+      "role": "CUSTOMER",
+      "fullName": "Trùng",
+      "email": "khac{{suffix}}@example.com",
+      "phone": "07{{suffix}}"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 409", () => pm.response.to.have.status(409));
+      pm.test("USERNAME_ALREADY_USED", () => pm.expect(pm.response.json().errorCode).to.eql("USERNAME_ALREADY_USED"));
+    language: text/javascript
+order: 3000

@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderB}}/cancel"
+method: PATCH
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenB}}
+body:
+  type: json
+  content: |-
+    {
+      "reason": "Tôi đổi ý"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Đơn chuyển sang CANCELLED", () => pm.expect(d.status).to.eql("CANCELLED"));
+      pm.test("Hoàn đủ 75.000, payment REFUNDED", () => { pm.expect(d.refund.amount).to.eql(75000); pm.expect(d.payment.status).to.eql("REFUNDED"); pm.expect(d.reason).to.eql("Tôi đổi ý"); });
+    language: text/javascript
+order: 4000

@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{baseUrl}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+body:
+  type: json
+  content: |-
+    {
+      "receiverName": "Khách A",
+      "receiverPhone": "0901000001",
+      "deliveryAddress": "12 Ngõ 45 Trần Cung, Cầu Giấy, Hà Nội",
+      "note": "Gọi trước khi giao",
+      "paymentMethod": "BITCOIN"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 400", () => pm.response.to.have.status(400));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là VALIDATION_ERROR", () => pm.expect(body.errorCode).to.eql("VALIDATION_ERROR"));
+    language: text/javascript
+order: 9000

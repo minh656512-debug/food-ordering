@@ -8,6 +8,21 @@ import authRoutes from "./modules/account/auth.routes.js";
 import customerRoutes from "./modules/account/customer.routes.js";
 import sellerRoutes from "./modules/account/seller.routes.js";
 import shopRoutes from "./modules/account/shop.routes.js";
+// Module Order (BE3)
+import orderRoutes, {
+    adminOrderRoutes,
+    sellerOrderRoutes
+} from "./modules/order/order.routes.js";
+
+import paymentRoutes, {
+    adminTransactionRoutes
+} from "./modules/order/payment.routes.js";
+
+import refundRoutes from "./modules/order/refund.routes.js";
+
+import shopStatisticRoutes, {
+    adminStatisticRoutes
+} from "./modules/order/statistic.routes.js";
 
 // Gộp router của các module, tiền tố /api/v1 được gắn ở app.js.
 const router = Router();
@@ -34,5 +49,19 @@ router.use("/shops", shopRoutes);
 
 // module menu (BE2) và module order (BE3): mỗi người thêm router của mình vào đây
 // router.use("/dishes", dishRoutes);
+// module menu (BE2) - bổ sung sau
+// module order (BE3)
+router.use("/orders", orderRoutes);
+router.use("/orders", refundRoutes);
+
+router.use("/seller/orders", sellerOrderRoutes);
+
+router.use("/payments", paymentRoutes);
+
+router.use("/shops", shopStatisticRoutes);
+
+router.use("/admin/orders", adminOrderRoutes);
+router.use("/admin/transactions", adminTransactionRoutes);
+router.use("/admin/statistics", adminStatisticRoutes);
 
 export default router;

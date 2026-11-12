@@ -1,0 +1,27 @@
+$kind: collection
+description: |-
+  Không cần tài khoản mẫu hay mật khẩu mẫu. Collection tự đăng ký tài khoản mới qua API BE1 (mật khẩu trong biến password).
+
+  Cách chạy:
+  1. Chạy thư mục 1 (tự tạo số suffix ngẫu nhiên, đăng ký 4 khách, 2 người bán, 2 cửa hàng). Dừng ở request 'DỪNG LẠI' và xem tab Visualize để thấy số suffix.
+  2. Chạy file database/dev/be3_prepare_test_data.sql với số suffix đó (duyệt cửa hàng, tạo admin, tạo món, nạp giỏ hàng).
+  3. Chạy lần lượt thư mục 2 đến 8. Thư mục 9 (VNPay) làm thủ công.
+  Muốn chạy lại từ đầu: chạy lại thư mục 1 (suffix mới) rồi chạy file SQL với suffix mới.
+variables:
+  baseUrl: http://localhost:5001/api/v1
+  password: "123456"
+  suffix: ""
+  tokenA: ""
+  tokenB: ""
+  tokenC: ""
+  tokenD: ""
+  sellerToken: ""
+  seller2Token: ""
+  adminToken: ""
+  orderA: ""
+  orderB: ""
+  orderC: ""
+  orderD: ""
+  orderV: ""
+  shopId: ""
+  shop2Id: ""

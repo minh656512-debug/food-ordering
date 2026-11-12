@@ -1,0 +1,29 @@
+$kind: http-request
+name: Khách A đặt hàng VNPAY (cần chạy lại file SQL để nạp lại giỏ)
+description: "Nếu trả 400 CART_EMPTY: chạy lại file database/dev/be3_prepare_test_data.sql với cùng suffix để nạp lại giỏ hàng."
+url: "{{baseUrl}}/orders"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+body:
+  type: json
+  content: |-
+    {
+      "receiverName": "Khách A",
+      "receiverPhone": "0901000001",
+      "deliveryAddress": "12 Ngõ 45 Trần Cung, Cầu Giấy, Hà Nội",
+      "note": "Gọi trước khi giao",
+      "paymentMethod": "VNPAY"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+      if (body.success) pm.collectionVariables.set("orderV", String(d.id));
+    language: text/javascript
+order: 1000

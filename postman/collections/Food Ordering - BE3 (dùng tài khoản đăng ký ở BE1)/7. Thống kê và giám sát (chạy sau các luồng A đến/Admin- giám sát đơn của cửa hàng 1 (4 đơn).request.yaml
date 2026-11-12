@@ -1,0 +1,20 @@
+$kind: http-request
+name: "Admin: giám sát đơn của cửa hàng 1 (4 đơn)"
+url: "{{baseUrl}}/admin/orders?shopId={{shopId}}"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+queryParams:
+  shopId: "{{shopId}}"
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Đúng 4 đơn", () => pm.expect(d.pagination.total).to.eql(4));
+    language: text/javascript
+order: 8000

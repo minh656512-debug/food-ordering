@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/seller/orders/history?status=CANCELLED"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+queryParams:
+  status: CANCELLED
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Có đơn B", () => pm.expect(d.items.map(o => String(o.id))).to.include(pm.collectionVariables.get("orderB")));
+    language: text/javascript
+order: 6000

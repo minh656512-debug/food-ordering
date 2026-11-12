@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/payments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenB}}
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "{{orderB}}",
+      "method": "MOCK",
+      "simulate": "SUCCESS"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 2000

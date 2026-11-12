@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/shops/{{shopId}}/statistics/revenue"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{seller2Token}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 403", () => pm.response.to.have.status(403));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là FORBIDDEN", () => pm.expect(body.errorCode).to.eql("FORBIDDEN"));
+    language: text/javascript
+order: 5000

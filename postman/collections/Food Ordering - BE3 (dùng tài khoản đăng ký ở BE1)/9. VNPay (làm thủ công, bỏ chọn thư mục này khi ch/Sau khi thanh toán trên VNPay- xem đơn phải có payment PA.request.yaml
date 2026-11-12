@@ -1,0 +1,18 @@
+$kind: http-request
+name: "Sau khi thanh toán trên VNPay: xem đơn phải có payment PAID"
+url: "{{baseUrl}}/orders/{{orderV}}"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("payment.status (PAID nếu đã thanh toán xong)", () => console.log("payment.status = " + d.payment.status));
+    language: text/javascript
+order: 4000

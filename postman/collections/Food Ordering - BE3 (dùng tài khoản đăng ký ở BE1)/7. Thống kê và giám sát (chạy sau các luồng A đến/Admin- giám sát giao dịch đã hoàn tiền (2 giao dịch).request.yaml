@@ -1,0 +1,21 @@
+$kind: http-request
+name: "Admin: giám sát giao dịch đã hoàn tiền (2 giao dịch)"
+url: "{{baseUrl}}/admin/transactions?shopId={{shopId}}&status=REFUNDED"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+queryParams:
+  shopId: "{{shopId}}"
+  status: REFUNDED
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("2 giao dịch, có thông tin hoàn tiền", () => { pm.expect(d.pagination.total).to.eql(2); pm.expect(d.items[0].refund.amount).to.eql(75000); });
+    language: text/javascript
+order: 10000

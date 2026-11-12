@@ -1,0 +1,25 @@
+$kind: http-request
+name: Tạo liên kết thanh toán VNPay (503 nếu chưa cấu hình VNPay)
+url: "{{baseUrl}}/payments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "{{orderV}}",
+      "method": "VNPAY"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("201 có paymentUrl hoặc 503 chưa cấu hình", () => pm.expect([201, 503]).to.include(pm.response.code));
+      if (pm.response.code === 201) { pm.test("Có paymentUrl của VNPay", () => pm.expect(d.paymentUrl).to.include("vnp_SecureHash=")); console.log("MỞ LINK NÀY TRONG TRÌNH DUYỆT: " + d.paymentUrl); pm.visualizer.set(`<div style="font-family:sans-serif;padding:12px"><h3>Bấm để thanh toán trên VNPay sandbox</h3><p><a href="{{url}}" target="_blank">Mở trang thanh toán</a></p></div>`, { url: d.paymentUrl }); }
+    language: text/javascript
+order: 2000

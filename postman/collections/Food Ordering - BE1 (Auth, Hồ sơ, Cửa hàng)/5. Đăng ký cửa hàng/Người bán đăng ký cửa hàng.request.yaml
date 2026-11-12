@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/shops"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Quán Test {{suffix}}",
+      "address": "1 Tạ Quang Bửu, Hà Nội",
+      "phone": "0243000009",
+      "description": "Quán thử",
+      "openingHours": "07:00 - 21:00"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{sellerToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status 201", () => pm.response.to.have.status(201));
+      pm.test("PENDING_APPROVAL", () => pm.expect(pm.response.json().data.status).to.eql("PENDING_APPROVAL"));
+    language: text/javascript
+order: 1000

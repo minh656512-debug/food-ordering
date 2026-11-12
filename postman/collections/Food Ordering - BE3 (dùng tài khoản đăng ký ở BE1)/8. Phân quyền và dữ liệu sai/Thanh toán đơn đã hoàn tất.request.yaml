@@ -1,0 +1,24 @@
+$kind: http-request
+url: "{{baseUrl}}/payments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenA}}
+body:
+  type: json
+  content: |-
+    {
+      "orderId": "{{orderA}}",
+      "method": "MOCK"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 409", () => pm.response.to.have.status(409));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là ORDER_NOT_PAYABLE", () => pm.expect(body.errorCode).to.eql("ORDER_NOT_PAYABLE"));
+    language: text/javascript
+order: 14000

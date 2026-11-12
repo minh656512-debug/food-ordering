@@ -1,0 +1,20 @@
+$kind: http-request
+name: "Admin: thống kê hệ thống"
+url: "{{baseUrl}}/admin/statistics?groupBy=day"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{adminToken}}
+queryParams:
+  groupBy: day
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Có đủ số liệu", () => { pm.expect(d.users.customers).to.be.at.least(4); pm.expect(d.orders.total).to.be.at.least(4); pm.expect(d.revenue.totalRefunded).to.be.at.least(150000); pm.expect(d.topShops).to.be.an("array"); });
+    language: text/javascript
+order: 7000

@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/payments"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+body:
+  type: json
+  content: |-
+    {
+      "orderId": 1,
+      "method": "MOCK"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 403", () => pm.response.to.have.status(403));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 6000

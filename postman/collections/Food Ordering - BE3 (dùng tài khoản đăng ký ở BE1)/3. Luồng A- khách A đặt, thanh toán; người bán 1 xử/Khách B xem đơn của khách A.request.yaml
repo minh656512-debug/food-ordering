@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/orders/{{orderA}}"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{tokenB}}
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 404", () => pm.response.to.have.status(404));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("errorCode là ORDER_NOT_FOUND", () => pm.expect(body.errorCode).to.eql("ORDER_NOT_FOUND"));
+    language: text/javascript
+order: 7000

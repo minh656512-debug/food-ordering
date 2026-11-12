@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/shops"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{seller2Token}}
+body:
+  type: json
+  content: |-
+    {
+      "name": "Quán BE3 nb2 {{suffix}}",
+      "address": "1 Tạ Quang Bửu, Hà Nội",
+      "phone": "0243000010",
+      "description": "Quán thử BE3",
+      "openingHours": "07:00 - 21:00"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 201", () => pm.response.to.have.status(201));
+      const body = pm.response.json();
+      const d = body.data;
+    language: text/javascript
+order: 10000

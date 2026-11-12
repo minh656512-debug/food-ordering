@@ -1,0 +1,20 @@
+$kind: http-request
+name: "Người bán 1: doanh thu theo tuần"
+url: "{{baseUrl}}/shops/{{shopId}}/statistics/revenue?groupBy=week"
+method: GET
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{sellerToken}}
+queryParams:
+  groupBy: week
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Mã trả về 200", () => pm.response.to.have.status(200));
+      const body = pm.response.json();
+      const d = body.data;
+      pm.test("Tổng 150.000", () => pm.expect(d.summary.totalRevenue).to.eql(150000));
+    language: text/javascript
+order: 2000

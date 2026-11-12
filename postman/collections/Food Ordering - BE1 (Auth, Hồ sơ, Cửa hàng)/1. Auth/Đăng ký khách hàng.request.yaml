@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{baseUrl}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "username": "kh_{{suffix}}",
+      "password": "{{password}}",
+      "role": "CUSTOMER",
+      "fullName": "Khách Test",
+      "email": "kh{{suffix}}@example.com",
+      "phone": "09{{suffix}}",
+      "address": "Hà Nội"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set("suffix", Date.now().toString().slice(-8));
+    language: text/javascript
+  - type: afterResponse
+    code: |-
+      pm.test("Status 201", () => pm.response.to.have.status(201));
+      pm.test("ACTIVE", () => pm.expect(pm.response.json().data.status).to.eql("ACTIVE"));
+    language: text/javascript
+order: 1000
