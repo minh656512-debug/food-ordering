@@ -8,6 +8,11 @@ import authRoutes from "./modules/account/auth.routes.js";
 import customerRoutes from "./modules/account/customer.routes.js";
 import sellerRoutes from "./modules/account/seller.routes.js";
 import shopRoutes from "./modules/account/shop.routes.js";
+import categoryRoutes from "./modules/menu/category.routes.js"
+import dishRoutes from "./modules/menu/dish.routes.js";
+import cartRoutes from "./modules/menu/cart.routes.js";
+import reviewRoutes from "./modules/menu/review.routes.js";
+
 // Module Order (BE3)
 import orderRoutes, {
     adminOrderRoutes,
@@ -63,5 +68,13 @@ router.use("/shops", shopStatisticRoutes);
 router.use("/admin/orders", adminOrderRoutes);
 router.use("/admin/transactions", adminTransactionRoutes);
 router.use("/admin/statistics", adminStatisticRoutes);
+
+router.use('/categories', categoryRoutes);
+
+router.use("/dishes", dishRoutes);
+
+router.use("/carts", cartRoutes);
+
+router.use("/reviews", reviewRoutes);
 
 export default router;
