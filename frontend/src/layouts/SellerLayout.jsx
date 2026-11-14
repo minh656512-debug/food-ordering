@@ -13,9 +13,9 @@ const sellerLinks = [
 
 export default function SellerLayout() {
   return (
-    <div className="min-h-screen flex max-w-7xl mx-auto px-4 py-6 gap-6">
+    <div className="min-h-screen flex flex-col md:flex-row max-w-7xl mx-auto px-4 py-6 gap-6">
       <Sidebar title="Kênh Người Bán (SELLER)" links={sellerLinks} />
-      <main className="flex-1"><Outlet /></main>
+      <main className="flex-1 min-w-0"><Outlet /></main>
     </div>
   );
 }

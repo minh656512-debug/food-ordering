@@ -1,18 +1,35 @@
 import axiosClient, { USE_MOCK } from './axiosClient';
 import { initialMockDb } from '../mocks/mockDatabase';
 
+// Mật khẩu của mọi tài khoản mẫu (khớp database/02_seed.sql)
+export const MOCK_PASSWORD = 'Password@123';
+
 export const authApi = {
   async login(payload) {
     if (USE_MOCK) {
       const acc = initialMockDb.accounts.find((a) => a.username === payload.username);
-      if (!acc) throw { errorCode: 'INVALID_CREDENTIALS', message: 'Sai tên đăng nhập hoặc mật khẩu' };
+      if (!acc || payload.password !== MOCK_PASSWORD) {
+        throw { errorCode: 'INVALID_CREDENTIALS', message: 'Sai tên đăng nhập hoặc mật khẩu' };
+      }
       if (acc.status === 'LOCKED') throw { errorCode: 'ACCOUNT_LOCKED', message: 'Tài khoản đã bị khóa' };
-      return { success: true, data: { token: 'mock-jwt-token-' + acc.id, user: acc } };
+      const profile = [...initialMockDb.customers, ...initialMockDb.sellers].find((p) => p.accountId === acc.id);
+      return {
+        success: true,
+        data: {
+          token: 'mock-jwt-token-' + acc.id,
+          tokenType: 'Bearer',
+          // Cùng dạng với API thật (BE1)
+          user: { accountId: acc.id, username: acc.username, role: acc.role, status: acc.status, fullName: profile?.fullName ?? null },
+        },
+      };
     }
     return axiosClient.post('/auth/login', payload);
   },
   async register(payload) {
     if (USE_MOCK) {
+      if (initialMockDb.accounts.some((a) => a.username === payload.username)) {
+        throw { errorCode: 'USERNAME_ALREADY_USED', message: 'Tên đăng nhập đã tồn tại' };
+      }
       return { success: true, message: 'Đăng ký thành công', data: payload };
     }
     return axiosClient.post('/auth/register', payload);

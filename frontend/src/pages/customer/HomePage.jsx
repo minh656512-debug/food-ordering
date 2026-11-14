@@ -1,23 +1,35 @@
-import React from 'react';
-import { initialMockDb } from '../../mocks/mockDatabase';
-import { formatMoney } from '../../utils/formatMoney';
+import React, { useEffect, useState } from 'react';
+import { menuApi } from '../../api/menuApi';
+import ShopCard from '../../components/common/ShopCard';
+import DishBrowser from '../../components/customer/DishBrowser';
 
 export default function HomePage() {
+  const [shops, setShops] = useState([]);
+
+  useEffect(() => {
+    menuApi.getShops({ page: 1, limit: 6 }).then((res) => setShops(res.data.items)).catch(() => {});
+  }, []);
+
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-      <h1 className="text-xl font-bold text-slate-900">Trang chủ đặt món ăn trực tuyến (Use Case 4)</h1>
-      <p className="text-xs text-slate-500">
-        Component <code>HomePage</code> kết nối trực tiếp với tầng <code>src/api/</code> và <code>src/mocks/mockDatabase.js</code>.
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
-        {initialMockDb.dishes.slice(0, 6).map((dish) => (
-          <div key={dish.id} className="p-4 rounded-xl border border-slate-200">
-            <div className="font-bold text-slate-900">{dish.name}</div>
-            <div className="text-xs text-slate-500 mt-1">{dish.description}</div>
-            <div className="text-sm font-extrabold text-orange-600 mt-2">{formatMoney(dish.price)}</div>
+    <div className="space-y-10">
+      <section className="rounded-2xl bg-gradient-to-r from-orange-500 to-amber-400 text-white p-6 sm:p-10">
+        <h1 className="text-2xl sm:text-3xl font-extrabold">Đặt món ngon, giao tận nơi</h1>
+        <p className="mt-2 text-sm sm:text-base text-orange-50">Chọn món từ các cửa hàng gần bạn, thanh toán tiền mặt hoặc VNPay.</p>
+      </section>
+
+      {shops.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-lg font-bold">Cửa hàng nổi bật</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {shops.map((shop) => <ShopCard key={shop.id} shop={shop} />)}
           </div>
-        ))}
-      </div>
+        </section>
+      )}
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-bold">Món ăn</h2>
+        <DishBrowser />
+      </section>
     </div>
   );
 }

@@ -12,9 +12,9 @@ const adminLinks = [
 
 export default function AdminLayout() {
   return (
-    <div className="min-h-screen flex max-w-7xl mx-auto px-4 py-6 gap-6">
+    <div className="min-h-screen flex flex-col md:flex-row max-w-7xl mx-auto px-4 py-6 gap-6">
       <Sidebar title="Quản Trị Viên (ADMIN)" links={adminLinks} />
-      <main className="flex-1"><Outlet /></main>
+      <main className="flex-1 min-w-0"><Outlet /></main>
     </div>
   );
 }

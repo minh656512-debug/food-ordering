@@ -1,10 +1,16 @@
 import * as dishService from './dish.service.js';
 import { ok } from '../../common/utils/apiResponse.js';
+import { parseId } from './dish.schema.js';
 import asyncHandler from '../../common/utils/asyncHandler.js';
 
 export const getAll = asyncHandler(async (req, res) => {
-  const dishes = await dishService.getAllDishes();
-  res.status(200).json(ok(dishes));
+  const result = await dishService.searchDishes(req.query);
+  res.status(200).json(ok(result));
+});
+
+export const getById = asyncHandler(async (req, res) => {
+  const dish = await dishService.getDishDetail(parseId(req.params.id, 'Mã món ăn'));
+  res.status(200).json(ok(dish));
 });
 
 export const create = asyncHandler(async (req, res) => {

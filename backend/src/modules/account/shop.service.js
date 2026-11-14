@@ -2,6 +2,8 @@ import { SHOP_STATUS } from "../../common/constants/shopStatus.js";
 import AppError from "../../common/utils/AppError.js";
 import * as sellerRepository from "./seller.repository.js";
 import * as shopMapper from "./shop.mapper.js";
+import { toPublicShop } from "./shop.public.mapper.js";
+import { toPage } from "../order/order.mapper.js";
 import * as shopRepository from "./shop.repository.js";
 
 // Người bán gửi đăng ký cửa hàng. Cửa hàng mới luôn ở trạng thái chờ duyệt,
@@ -24,4 +26,18 @@ export const registerShop = async (accountId, data) => {
         status: SHOP_STATUS.PENDING_APPROVAL
     });
     return shopMapper.toShopResponse(shop);
+};
+
+
+export const searchShops = async ({ keyword, page, limit }) => {
+    const { rows, total } = await shopRepository.searchOpen({ keyword }, (page - 1) * limit, limit);
+    return toPage(rows, total, page, limit, toPublicShop);
+};
+
+export const getShopDetail = async (id) => {
+    const shop = await shopRepository.findOpenById(id);
+    if (!shop) {
+        throw new AppError(404, "SHOP_NOT_FOUND", "Không tìm thấy cửa hàng");
+    }
+    return toPublicShop(shop);
 };

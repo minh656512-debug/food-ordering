@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export const USE_MOCK = (import.meta.env.VITE_USE_MOCK ?? 'true') === 'true';
+export const USE_MOCK = (import.meta.env.VITE_USE_MOCK ?? 'false') === 'true';
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },

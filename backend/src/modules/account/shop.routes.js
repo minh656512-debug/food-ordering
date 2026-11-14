@@ -5,10 +5,11 @@ import validate from "../../common/middlewares/validate.js";
 import { ROLES } from "../../common/constants/roles.js";
 import * as shopController from "./shop.controller.js";
 import { createShopSchema } from "./shop.schema.js";
+import { searchShopQuerySchema } from "../menu/dish.schema.js";
 
 const router = Router();
 
-// Chỉ khai báo POST /shops. GET /shops, GET /shops/:id (công khai) do BE2 làm ở module menu.
+// POST /shops (người bán đăng ký) và GET /shops, GET /shops/:id (công khai, chỉ cửa hàng OPEN).
 
 /**
  * @swagger
@@ -60,5 +61,30 @@ router.post(
     validate(createShopSchema),
     shopController.register
 );
+
+/**
+ * @swagger
+ * /shops:
+ *   get:
+ *     tags: [Shop]
+ *     summary: Danh sách cửa hàng đang mở (công khai)
+ *     parameters:
+ *       - { in: query, name: keyword, schema: { type: string } }
+ *       - { in: query, name: page, schema: { type: integer, default: 1 } }
+ *       - { in: query, name: limit, schema: { type: integer, default: 10, maximum: 50 } }
+ *     responses:
+ *       200: { description: "data: { items: [Shop], pagination }" }
+ * /shops/{id}:
+ *   get:
+ *     tags: [Shop]
+ *     summary: Chi tiết cửa hàng đang mở (công khai)
+ *     parameters:
+ *       - { in: path, name: id, required: true, schema: { type: integer } }
+ *     responses:
+ *       200: { description: Thành công }
+ *       404: { description: SHOP_NOT_FOUND }
+ */
+router.get("/", validate(searchShopQuerySchema, "query"), shopController.getAll);
+router.get("/:id", shopController.getById);
 
 export default router;
