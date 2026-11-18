@@ -1,13 +1,10 @@
 import { ORDER_STATUS } from "../../common/constants/orderStatus.js";
+import { PAYMENT_METHOD } from "../../common/constants/paymentStatus.js";
+
+export { PAYMENT_METHOD };
 
 // Quy tắc nghiệp vụ thuần của module order (không đụng database) để dễ kiểm thử đơn vị.
 
-// Phương thức thanh toán (cột THANH_TOAN.PhuongThuc)
-export const PAYMENT_METHOD = Object.freeze({
-    VNPAY: "VNPAY",
-    COD: "COD",
-    MOCK: "MOCK" // cổng thanh toán mô phỏng, dùng khi chưa có tài khoản VNPay sandbox
-});
 
 // Trạng thái món ăn (cột MON_AN.TrangThai, do BE2 quản lý). Chỉ món AVAILABLE mới đặt được.
 export const DISH_AVAILABLE = "AVAILABLE";

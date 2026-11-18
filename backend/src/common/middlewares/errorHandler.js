@@ -3,6 +3,7 @@ import { fail } from "../utils/apiResponse.js";
 
 // Route không tồn tại -> 404 theo định dạng chung.
 export const notFoundHandler = (req, res) => {
+    console.warn(`[404 NOT FOUND] ${req.method} ${req.originalUrl}`);
     res.status(404).json(fail(`Không tìm thấy ${req.method} ${req.originalUrl}`, "NOT_FOUND"));
 };
 

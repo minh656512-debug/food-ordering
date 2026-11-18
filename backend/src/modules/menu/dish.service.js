@@ -22,6 +22,10 @@ export const getAllDishes = async () => {
   return await dishRepository.findAll();
 };
 
+export const getDishById = async (id) => {
+  return await dishRepository.getDishById(id);
+};
+
 export const createDish = async (data) => {
   return await dishRepository.create(data);
 };

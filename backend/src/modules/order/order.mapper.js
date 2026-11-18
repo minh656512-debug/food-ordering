@@ -1,3 +1,5 @@
+import { buildSepayQrUrl } from "./payment.sepay.js";
+
 // Mapper của module order: quyết định dữ liệu trả về, không bao giờ trả thẳng bản ghi Prisma.
 // Decimal -> Number, Date -> chuỗi ISO.
 
@@ -12,7 +14,8 @@ export const toPaymentInfo = (payment) =>
               status: payment.status,
               amount: toNumber(payment.amount),
               transactionId: payment.transactionId,
-              paidAt: toIso(payment.paidAt)
+              paidAt: toIso(payment.paidAt),
+              confirmedAt: toIso(payment.confirmedAt)
           }
         : null;
 
@@ -63,7 +66,10 @@ export const toOrderResponse = (order) => {
             : null,
         items: (order.items ?? []).map(toOrderItemResponse),
         payment: toPaymentInfo(payment),
-        refund: toRefundInfo(payment?.refund)
+        paymentStatus: payment?.status ?? null,
+        paymentMethod: payment?.method ?? null,
+        refund: toRefundInfo(payment?.refund),
+        qrUrl: (order.id && order.totalAmount) ? buildSepayQrUrl(order.id, order.totalAmount) : null
     };
 };
 

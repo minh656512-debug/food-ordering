@@ -9,7 +9,11 @@ import { ROLES } from '../../common/constants/roles.js';
 const router = Router();
 
 // API Công khai: Khách hàng xem danh sách món ăn
+<<<<<<< HEAD
 router.get('/', validate(searchDishQuerySchema, 'query'), dishController.getAll);
+=======
+router.get('/', dishController.getAll);
+>>>>>>> 539ce53 (fix full backend and frontend)
 router.get('/:id', dishController.getById);
 
 // API Quản trị: Bắt buộc Đăng nhập (auth) VÀ Quyền Người bán (authorize)

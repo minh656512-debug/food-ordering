@@ -230,13 +230,21 @@ export const changeOrderStatus = async (sellerId, orderId, action) => {
         );
         if (changed === 0) throw wrongStatus;
 
-        if (action === "complete") {
-            // Đơn COD hoàn tất = đã thu tiền
-            await paymentRepository.markCodPaidByOrderId(orderId, tx);
-            // Cộng điểm tích lũy đúng một lần: bước DELIVERING -> COMPLETED chỉ thành công một lần cho mỗi đơn
-            const points = calculateLoyaltyPoints(current.totalAmount);
-            if (points > 0) await orderRepository.addLoyaltyPoints(current.customerId, points, tx);
-        }
+       
+if (action === "complete") {
+    await paymentRepository.markCodPaidByOrderId(orderId, tx);
+    // Cộng điểm tích lũy đúng một lần
+    const points = calculateLoyaltyPoints(current.totalAmount);
+
+    if (points > 0) {
+        await orderRepository.addLoyaltyPoints(
+            current.customerId,
+            points,
+            tx
+        );
+    }
+}
+
 
         return orderRepository.findDetailById(orderId, tx);
     });

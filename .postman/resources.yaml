@@ -1,0 +1,17 @@
+# Use this workspace to collaborate
+workspace:
+  id: 42b2f68e-d2c1-4ad4-8fe9-ae398a7e002a
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Food Ordering - BE1 (Auth, Hồ sơ, Cửa hàng): 307aa4ce-ccb6-4258-9d2f-13b7b4fa1357
+    ../postman/collections/Food Ordering - BE3 (dùng tài khoản đăng ký ở BE1): a79d12bd-d1b2-4e8f-b70e-2f7240e7132a
+    ../postman/collections/Food Ordering - BE2: c304fdcb-09c4-49ca-b4b9-a62918e81326
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/

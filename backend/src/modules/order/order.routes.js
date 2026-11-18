@@ -29,7 +29,7 @@ import {
  *       nullable: true
  *       properties:
  *         id: { type: integer }
- *         method: { type: string, enum: [VNPAY, COD, MOCK] }
+ *         method: { type: string, enum: [MOMO, COD, VNPAY, MOCK] }
  *         status: { type: string, enum: [UNPAID, PAID, FAILED, REFUNDED] }
  *         amount: { type: number, example: 85000 }
  *         transactionId: { type: string, nullable: true }
@@ -115,7 +115,7 @@ const router = Router();
  *     summary: Đặt hàng từ giỏ hàng hiện tại
  *     description: |
  *       Lấy giỏ hàng của khách, tạo đơn PENDING kèm đơn giá tại thời điểm đặt, tạo bản ghi thanh toán UNPAID, rồi xóa giỏ.
- *       Với VNPAY/MOCK, sau đó gọi `POST /payments` để thanh toán. Với COD không cần thanh toán trước.
+ *       Với MOMO/VNPAY/MOCK, sau đó gọi `POST /payments` để thanh toán. Với COD không cần thanh toán trước.
  *     security: [{ bearerAuth: [] }]
  *     requestBody:
  *       required: true
@@ -129,7 +129,7 @@ const router = Router();
  *               receiverPhone: { type: string, example: "0901000001" }
  *               deliveryAddress: { type: string, example: "12 Ngõ 45 Trần Cung, Cầu Giấy, Hà Nội" }
  *               note: { type: string, example: Ít cơm }
- *               paymentMethod: { type: string, enum: [VNPAY, COD, MOCK] }
+ *               paymentMethod: { type: string, enum: [MOMO, COD, VNPAY, MOCK] }
  *     responses:
  *       201:
  *         description: Đặt hàng thành công

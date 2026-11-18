@@ -1,0 +1,8 @@
+$kind: http-request
+url: http://localhost:5001/api/v1/carts/items/5
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_09m0}}"
+order: 3000

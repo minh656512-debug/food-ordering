@@ -70,6 +70,10 @@ export const menuApi = {
     if (USE_MOCK) return { success: true, message: 'Đã thêm vào giỏ hàng', data: payload };
     return axiosClient.post('/carts', payload); // payload: { dishId, quantity }
   },
+  async removeFromCart(itemId) {
+    if (USE_MOCK) return { success: true };
+    return axiosClient.delete(`/cart/items/${itemId}`);
+  },
   async createDish(shopId, payload) {
     if (USE_MOCK) return { success: true, data: payload };
     return axiosClient.post(`/shops/${shopId}/dishes`, payload);

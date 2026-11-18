@@ -50,3 +50,7 @@ export const addItemToCart = async (customerId, dishId, quantity) => {
     // Lưu vào Database
     return await cartRepository.addCartItem(itemData);
 };
+
+export const removeItem = async (itemId) => {
+    return await cartRepository.removeCartItem(itemId);
+};

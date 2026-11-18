@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { authApi } from '../../api/authApi';
 import Button from '../../components/common/Button';
@@ -109,6 +110,213 @@ export default function RegisterPage() {
       <p className="text-xs text-slate-500">
         Đã có tài khoản? <Link to="/login" className="text-orange-600 font-semibold">Đăng nhập</Link>
       </p>
+=======
+import { Link, useNavigate } from 'react-router-dom';
+import { authApi } from '../../api/authApi';
+
+export default function RegisterPage() {
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    username: '',
+    password: '',
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    role: 'CUSTOMER'
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (!form.username.trim() || !form.password || !form.fullName.trim() || !form.email.trim() || !form.phone.trim()) {
+      setError('Vui lòng điền đầy đủ các thông tin bắt buộc.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await authApi.register(form);
+      setSuccess('Đăng ký tài khoản thành công! Đang chuyển hướng sang trang đăng nhập...');
+      setTimeout(() => {
+        navigate('/login');
+      }, 1500);
+    } catch (err) {
+      setError(err?.message || 'Đăng ký không thành công. Tên đăng nhập hoặc email/sđt có thể đã tồn tại.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto my-8 bg-white rounded-2xl border border-slate-200 shadow-sm p-8 space-y-6">
+      <div className="text-center space-y-1">
+        <h1 className="text-2xl font-black text-slate-900 tracking-tight">Đăng ký tài khoản</h1>
+        <p className="text-sm text-slate-500">Tạo tài khoản để đặt món hoặc mở cửa hàng</p>
+      </div>
+
+      {error && (
+        <div className="p-3 text-sm bg-rose-50 border border-rose-200 text-rose-700 rounded-xl">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="p-3 text-sm bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl">
+          {success}
+        </div>
+      )}
+
+      <form onSubmit={handleRegister} className="space-y-4">
+        <div>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Vai trò
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, role: 'CUSTOMER' }))}
+              className={`py-2 text-xs font-bold rounded-xl border transition ${
+                form.role === 'CUSTOMER'
+                  ? 'border-orange-600 bg-orange-50 text-orange-600'
+                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              👤 Khách hàng
+            </button>
+            <button
+              type="button"
+              onClick={() => setForm((f) => ({ ...f, role: 'SELLER' }))}
+              className={`py-2 text-xs font-bold rounded-xl border transition ${
+                form.role === 'SELLER'
+                  ? 'border-orange-600 bg-orange-50 text-orange-600'
+                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+              }`}
+            >
+              🏪 Người bán / Quán ăn
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Tên đăng nhập *
+          </label>
+          <input
+            name="username"
+            type="text"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="vd: nguyenvana"
+            value={form.username}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Mật khẩu *
+          </label>
+          <input
+            name="password"
+            type="password"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Tối thiểu 6 ký tự"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+            Họ và tên *
+          </label>
+          <input
+            name="fullName"
+            type="text"
+            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Nguyễn Văn A"
+            value={form.fullName}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              Email *
+            </label>
+            <input
+              name="email"
+              type="email"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="a@gmail.com"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              Số điện thoại *
+            </label>
+            <input
+              name="phone"
+              type="text"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="0901234567"
+              value={form.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        {form.role === 'CUSTOMER' && (
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+              Địa chỉ nhận hàng mặc định
+            </label>
+            <input
+              name="address"
+              type="text"
+              className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Số nhà, tên đường, quận/huyện, tỉnh thành"
+              value={form.address}
+              onChange={handleChange}
+            />
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 px-4 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm shadow-md transition disabled:opacity-50"
+        >
+          {loading ? 'Đang tạo tài khoản...' : 'Hoàn tất đăng ký'}
+        </button>
+      </form>
+
+      <div className="text-center text-xs text-slate-500">
+        Đã có tài khoản?{' '}
+        <Link to="/login" className="font-bold text-orange-600 hover:underline">
+          Đăng nhập ngay
+        </Link>
+      </div>
+>>>>>>> 539ce53 (fix full backend and frontend)
     </div>
   );
 }

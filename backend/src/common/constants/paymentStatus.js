@@ -5,3 +5,13 @@ export const PAYMENT_STATUS = Object.freeze({
     FAILED: "FAILED",
     REFUNDED: "REFUNDED"
 });
+
+// Phương thức thanh toán (cột THANH_TOAN.PhuongThuc)
+export const PAYMENT_METHOD = Object.freeze({
+    COD: "COD",
+    MOMO: "MOMO",
+    VNPAY: "VNPAY",
+    MOCK: "MOCK",
+    SEPAY: "SEPAY",
+    VIETQR: "VIETQR"
+});

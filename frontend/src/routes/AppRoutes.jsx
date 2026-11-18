@@ -16,6 +16,7 @@ import CheckoutPage from '../pages/customer/CheckoutPage';
 import OrderDetailPage from '../pages/customer/OrderDetailPage';
 import OrderHistoryPage from '../pages/customer/OrderHistoryPage';
 import ProfilePage from '../pages/customer/ProfilePage';
+import PaymentResultPage from '../pages/customer/PaymentResultPage';
 
 import ShopRegisterPage from '../pages/seller/ShopRegisterPage';
 import ShopInfoPage from '../pages/seller/ShopInfoPage';
@@ -43,6 +44,7 @@ export default function AppRoutes() {
         <Route path="/checkout" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><CheckoutPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><OrderHistoryPage /></ProtectedRoute>} />
         <Route path="/orders/:id" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><OrderDetailPage /></ProtectedRoute>} />
+        <Route path="/payment-result" element={<PaymentResultPage />} />
         <Route path="/profile" element={<ProtectedRoute allowedRoles={['CUSTOMER']}><ProfilePage /></ProtectedRoute>} />
       </Route>
 

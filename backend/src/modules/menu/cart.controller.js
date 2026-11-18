@@ -19,17 +19,8 @@ export const addToCart = asyncHandler(async (req, res) => {
   res.status(201).json(ok(newItem, "Đã thêm vào giỏ hàng"));
 });
 
-export const removeItem = async (req, res, next) => {
-    try {
-        const itemId = req.params.id; // Lấy ID số 5 từ URL
-        // Chỗ này bạn sẽ gọi tầng cartService để xóa bản ghi trong DB
-        // await cartService.removeItem(itemId);
-
-        res.status(200).json({ 
-            success: true, 
-            message: "Xóa món ăn khỏi giỏ thành công" 
-        });
-    } catch (error) {
-        next(error);
-    }
-};
+export const removeItem = asyncHandler(async (req, res) => {
+    const itemId = req.params.id;
+    await cartService.removeItem(itemId);
+    res.status(200).json(ok(null, "Xóa món ăn khỏi giỏ thành công"));
+});

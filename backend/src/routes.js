@@ -74,6 +74,7 @@ router.use('/categories', categoryRoutes);
 router.use("/dishes", dishRoutes);
 
 router.use("/carts", cartRoutes);
+router.use("/cart", cartRoutes);
 
 router.use("/reviews", reviewRoutes);
 

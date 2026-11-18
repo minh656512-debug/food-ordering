@@ -22,6 +22,16 @@ export const updateIf = async (id, fromStatuses, data, db = prisma) => {
     return result.count;
 };
 
+// Lưu liên kết/QR MoMo vào đúng lần thanh toán đang chờ. Nếu trong lúc gọi MoMo khách đã bấm tạo
+// lần mới (mã giao dịch đổi) hoặc IPN đã tới thì không ghi đè. Trả về số dòng đã sửa.
+export const attachMomoLink = async (id, transactionId, data, db = prisma) => {
+    const result = await db.payment.updateMany({
+        where: { id, transactionId, status: "UNPAID" },
+        data
+    });
+    return result.count;
+};
+
 // Đơn thu tiền mặt (COD) hoàn tất thì coi như đã thu tiền
 export const markCodPaidByOrderId = async (orderId, db = prisma) => {
     const result = await db.payment.updateMany({

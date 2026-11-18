@@ -211,13 +211,19 @@ model OrderItem {
 }
 
 model Payment {
-  id            Int       @id @default(autoincrement()) @map("MaThanhToan")
-  transactionId String?   @unique(map: "uq_thanh_toan_ma_giao_dich") @map("MaGiaoDich") @db.VarChar(100)
-  method        String    @map("PhuongThuc") @db.VarChar(30)
-  amount        Decimal   @map("SoTien") @db.Decimal(19, 0)
-  status        String    @default("UNPAID") @map("TrangThai") @db.VarChar(30)
-  paidAt        DateTime? @map("NgayThanhToan")
-  orderId       Int       @map("DON_HANGMaDonHang")
+  id              Int       @id @default(autoincrement()) @map("MaThanhToan")
+  transactionId   String?   @unique(map: "uq_thanh_toan_ma_giao_dich") @map("MaGiaoDich") @db.VarChar(100)
+  method          String    @map("PhuongThuc") @db.VarChar(30)
+  amount          Decimal   @map("SoTien") @db.Decimal(19, 0)
+  status          String    @default("UNPAID") @map("TrangThai") @db.VarChar(30)
+  paidAt          DateTime? @map("NgayThanhToan")
+  orderId         Int       @map("DON_HANGMaDonHang")
+  providerTransId String?   @unique(map: "uq_thanh_toan_ma_giao_dich_momo") @map("MaGiaoDichMoMo") @db.VarChar(50)
+  payUrl          String?   @map("LienKetThanhToan") @db.VarChar(1000)
+  qrCodeUrl       String?   @map("MaQR") @db.VarChar(1000)
+  expiresAt       DateTime? @map("HetHanLuc")
+  confirmedBy     Int?      @map("NguoiXacNhan")
+  confirmedAt     DateTime? @map("NgayXacNhan")
 
   order  Order   @relation(fields: [orderId], references: [id])
   refund Refund?

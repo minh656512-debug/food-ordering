@@ -23,3 +23,9 @@ export const addCartItem = async (data) => {
     data: data
   });
 };
+
+export const removeCartItem = async (itemId) => {
+  return await prisma.cartItem.delete({
+    where: { id: Number(itemId) }
+  });
+};

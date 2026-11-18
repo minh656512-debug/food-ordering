@@ -9,6 +9,27 @@ export const orderApi = {
     if (USE_MOCK) return { success: true, data: [] };
     return axiosClient.get('/orders/my');
   },
+  async getOrderDetail(orderId) {
+    if (USE_MOCK) return { success: true, data: { id: orderId } };
+    return axiosClient.get(`/orders/${orderId}`);
+  },
+  async getPaymentStatus(paymentId) {
+    if (USE_MOCK) return { success: true, data: { status: 'PAID' } };
+    return axiosClient.get(`/payments/${paymentId}/status`);
+  },
+  async confirmScanSuccess(paymentId, receivedAmount) {
+    if (USE_MOCK) return { success: true, data: { status: 'PAID' } };
+    return axiosClient.patch(`/payments/${paymentId}/scan-success`, { receivedAmount });
+  },
+  async sendWebhook(payload) {
+    if (USE_MOCK) return { success: true };
+    return axiosClient.post('/payments/webhook', payload);
+  },
+  async sendSepayWebhook(payload, apiKey = '') {
+    if (USE_MOCK) return { success: true };
+    const headers = apiKey ? { Authorization: `Apikey ${apiKey}` } : {};
+    return axiosClient.post('/payment/sepay/webhook', payload, { headers });
+  },
   async cancelOrder(orderId, reason) {
     if (USE_MOCK) return { success: true, data: { orderId, status: 'CANCELLED', reason } };
     return axiosClient.patch(`/orders/${orderId}/cancel`, { reason });

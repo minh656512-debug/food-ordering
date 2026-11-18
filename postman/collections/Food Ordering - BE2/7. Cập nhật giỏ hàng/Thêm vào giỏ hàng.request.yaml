@@ -1,0 +1,17 @@
+$kind: http-request
+url: http://localhost:5001/api/v1/carts
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"dishId\": 2,\r
+
+    \  \"quantity\": 2\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_09m0}}"
+order: 1000

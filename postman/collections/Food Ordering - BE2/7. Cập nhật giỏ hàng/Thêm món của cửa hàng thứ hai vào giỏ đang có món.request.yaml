@@ -1,0 +1,5 @@
+$kind: http-request
+name: Thêm món của cửa hàng thứ hai vào giỏ đang có món cửa hàng thứ nhất
+url: ""
+method: GET
+order: 4000
