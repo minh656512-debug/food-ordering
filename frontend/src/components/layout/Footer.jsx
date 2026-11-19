@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Footer() {
+export default function Footer({ noMarginTop = false }) {
   return (
-    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800 mt-16">
+    <footer className={`bg-slate-900 text-slate-300 border-t border-slate-800 ${noMarginTop ? 'mt-0' : 'mt-16'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-xs">
         <div className="space-y-3">
           <div className="text-lg font-extrabold text-white">🍜 FoodOrder<span className="text-orange-500">VN</span></div>

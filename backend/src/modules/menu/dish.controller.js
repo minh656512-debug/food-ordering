@@ -13,11 +13,6 @@ export const getById = asyncHandler(async (req, res) => {
   res.status(200).json(ok(dish));
 });
 
-export const getById = asyncHandler(async (req, res) => {
-  const dish = await dishService.getDishById(req.params.id);
-  res.status(200).json(ok(dish));
-});
-
 export const create = asyncHandler(async (req, res) => {
   const newDish = await dishService.createDish(req.body);
   res.status(201).json(ok(newDish, "Thêm món ăn thành công"));
